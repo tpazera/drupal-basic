@@ -1,0 +1,31 @@
+{% set background_image = fields.field_image.content|striptags|trim|split("|,|")[0] %}
+
+{% set url = fields.view_node.content|striptags|trim %}
+
+{% if (url is empty) or (url == '/') %}
+<div>
+Test
+</div>
+{% else %}
+<div>
+Test2
+</div>
+{% endif %}
+
+{{ fields.title.content }}
+
+{% if node.field_method_reference|length %}
+    <h2>Referencje</h2>
+    <ul>
+        {% for reference in node.field_reference %}
+            <li><a href="{{ path('entity.node.canonical', {'node':  reference.entity.id}) }}">{{ reference.entity.fields.title.value }}</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<img src="/{{ base_path ~ directory }}/img/zdj.svg" alt="zdj" />
+
+{{ file_url(node.field_image.entity.uri.value)}}
+
+#TWIG TWEAK
+{{ file_url(node.field_image.entity.fileuri | image_style('styl_obrazka')) }}

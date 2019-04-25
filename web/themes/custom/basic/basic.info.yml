@@ -1,0 +1,11 @@
+name: Template theme
+type: theme
+description: Theme by StudioFNC
+core: 8.x
+base theme: classy
+regions:
+  header: Nagłówek
+  content: Zawartość
+  footer: Stopka
+libraries:
+  - basic/global-theme

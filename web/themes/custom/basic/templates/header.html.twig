@@ -1,0 +1,18 @@
+
+<div class="container-fluid limit-width header_container">
+  <div class="row">
+    <div class="col-lg-3 col-md-3 col-7 header_logo">
+      <a href="/">
+        <img src="{{ base_path ~ directory }}/img/logo.svg" alt="Ekspertus - biuro kredytowe" />
+      </a>
+    </div>
+    
+    <div class="col-lg-6 col-md-7 col-12 header_menu">
+      {% if page.header %}
+        {{ page.header }}
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+
