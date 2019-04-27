@@ -1,21 +1,15 @@
 {
-  "name": "telega",
+  "name": "gulp",
   "version": "1.0.0",
-  "description": "",
-  "main": "gulpfile.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Tomasz Pazera",
-  "license": "ISC",
   "devDependencies": {
-    "gulp": "^3.9.0",
-    "gulp-autoprefixer": "^3.0.2",
-    "gulp-imagemin": "^2.3.0",
-    "gulp-livereload": "^3.8.0",
-    "gulp-sass": "^2.0.4",
-    "gulp-sourcemaps": "^1.5.2",
-    "gulp-uglifyjs": "^0.6.2",
-    "imagemin-pngquant": "^4.2.0"
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^4.1.0",
+    "gulp-clean-css": "^2.4.0",
+    "gulp-color": "^0.0.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-if": "^2.0.2",
+    "gulp-include": "^2.3.1",
+    "gulp-sass": "^3.2.1",
+    "gulp-uglify": "^2.1.2"
   }
 }

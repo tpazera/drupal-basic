@@ -1,46 +1,67 @@
-//CHANGE theme_folder
-var theme_folder = 'web/custom/basic';
+//----------------------------------------------------------------------------------------------------
+// Gulp Sass & JavaScript Compiler
+// https://github.com/jamiewade/gulp-sass-js
+//----------------------------------------------------------------------------------------------------
 
-var gulp = require('gulp');
-var livereload = require('gulp-livereload');
-var uglify = require('gulp-uglifyjs');
-var sass = require('gulp-sass');
-var autoprefixer = require('gulp-autoprefixer');
-var sourcemaps = require('gulp-sourcemaps');
-var imagemin = require('gulp-imagemin');
-var pngquant = require('imagemin-pngquant');
+var destination = "./web/themes/custom/claro/",
+    cssFileName = "style",
+    jsFileName = "main",
+    jsFolder = "lib/",
+    productionMode = true,
+    sassIncludeFile = "sass/style.scss",
+    sassFolder = "sass/";
 
-gulp.task('imagemin', function () {
-    return gulp.src('./themes/'+theme_folder+'/img/*')
-        .pipe(imagemin({
-            progressive: true,
-            svgoPlugins: [{ removeViewBox: false }],
-            use: [pngquant()]
-          }))
-        .pipe(gulp.dest('./themes/'+theme_folder+'/img'));
-  });
+var gulp = require('gulp'),
+    autoprefixer = require('gulp-autoprefixer'),
+    cleanCSS = require('gulp-clean-css'),
+    color = require('gulp-color'),
+    concat = require('gulp-concat'),
+    gulpif = require('gulp-if'),
+    include = require('gulp-include'),
+    sass = require('gulp-sass'),
+    uglify = require('gulp-uglify');
 
-gulp.task('sass', function () {
-  gulp.src('./themes/'+theme_folder+'/sass/**/*.scss')
-    .pipe(sourcemaps.init())
-        .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
-        .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 7', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
-    .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest('./themes/'+theme_folder+'/css'));
-});
 
-gulp.task('uglify', function () {
-  gulp.src('./themes/'+theme_folder+'/lib/*.js')
-    .pipe(uglify('main' + '.min.js'))
-    .pipe(gulp.dest('./themes/'+theme_folder+'/js'));
-});
+// Only run the tasks if a destination folder has been defined
+if (destination) {
+
+    gulp.task('styles', function() {
+        if (sassIncludeFile) {
+            gulp.src(destination + sassIncludeFile)
+                .pipe(sass().on('error', sass.logError))
+                .pipe(gulpif(productionMode == true, cleanCSS({compatibility: 'ie8'})))
+                .pipe(autoprefixer())
+                .pipe(concat(cssFileName + '.css'))
+                .pipe(gulp.dest(destination + 'css'));
+        } else {
+            console.log(color('You need to specify which folder contains your Sass files. Check env.example.json for an example.', 'RED'));
+            process.exit();
+        }
+    });
+
+    gulp.task('scripts', function() {
+        if (jsFolder) {
+            gulp.src(destination + jsFolder + '*.js')
+                .pipe(include())
+                .pipe(concat(jsFileName + '.js'))
+                .pipe(gulpif(productionMode == true, uglify()))
+                .pipe(gulp.dest(destination + 'js'))
+        } else {
+            console.log(color('You need to specify which folder contains your JavaScript files. Check env.example.json for an example.', 'RED'));
+            process.exit();
+        }
+    });
+
+} else {
+    console.log(color('You need to specify the destination folder for your generated files. Check env.example.json for an example.', 'RED'));
+    process.exit();
+}
 
 gulp.task('watch', function () {
-    livereload.listen();
+    gulp.watch(destination + sassFolder + '/**/*.scss', ['styles']);
+    gulp.watch(destination + jsFolder + '/**/*.js', ['scripts']);
+});
 
-    gulp.watch('./themes/'+theme_folder+'/sass/**/*.scss', ['sass']);
-    gulp.watch('./themes/'+theme_folder+'/lib/*.js', ['uglify']);
-    gulp.watch(['./themes/'+theme_folder+'/css/style.css', './themes/'+theme_folder+'/js/*.js',  './themes/'+theme_folder+'/templates/**/*.html.twig'], function (files) {
-        livereload.changed(files);
-      });
-  });
+gulp.task('default',['styles', 'scripts', 'watch']);
+
+gulp.task('refresh',['styles', 'scripts']);
